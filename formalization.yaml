@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/99c678e569c7c4c0772db297c5ddd5e4c9b6322e/schema/v0.4.schema.json
+version: "v0.4"
+
+project:
+  name: "Sharpness of the Martin–O'Bryant autoconvolution inequality"
+  description: >-
+    For every real ε > 0, there are finitely many nonnegative real heights
+    p₀,…,p_d, at least one positive, such that the step function taking height
+    pⱼ on [j,j+1) and zero elsewhere has autoconvolution ratio greater than
+    1−ε. The ratio divides the squared L² norm by the product of the L¹ and
+    L∞ norms of the autoconvolution on the real line with Lebesgue measure.
+  authors: ["Tonći Crmarić", "Vjekoslav Kovač", "Jelena Rupčić"]
+  responsible_maintainers: ["Vjekoslav Kovač"]
+  license: "Apache-2.0"
+
+classification:
+  arxiv: ["math.CA"]
+  msc2020: ["26D15", "42A85"]
+
+sources:
+  - title: "Sharpness of the Martin–O'Bryant autoconvolution inequality"
+    authors: ["Tonći Crmarić", "Vjekoslav Kovač", "Jelena Rupčić"]
+    id: "arXiv:2611.12685v1"
+    location: "Theorem 1 and its proof in Section 2"
+    type: "preprint"
+    relationship: "formalizes"
+
+related_formalizations:
+  - id: "sha256:ed0438fea339e36334e278e15897ae8924011e94d0c2e40012cd00c974cda878"
+    relationship: "builds-on"
+    note: "The authors’ earlier lean-autoconvolutions.zip supplied the Challenge and the Lean lemmas for the Section 2 proof."
+
+status:
+  scope: "Theorem 1 and the lemmas needed for its Section 2 proof."
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "Autoconvolutions.sharpness"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["GPT-6 Astra"]
+      framework: "Codex Work Mode"
+  notes: "The formalization authors credit GPT-6 Astra for the Lean formalization."
+
+fidelity:
+  divergences: >-
+    The proof follows the successive choices of q, K, and n in Section 2.
+    It chooses rational q = m/(m+1), proves the collision estimate with
+    falling factorials, and obtains the polynomial identity from the
+    central-binomial recurrence.
+
+review:
+  status: "agent-reviewed"
+  reviewers: ["OpenAI Codex AI reviewers"]
+  notes: "See docs/review.md for the independent AI review and docs/verification.md for the mechanical checks."
+
+alignment:
+  namespace: "Autoconvolutions"
+  statements:
+    - source: "Theorem 1"
+      lean: "Autoconvolutions.sharpness"
+      module: "Solution"
+      status: "proved"
+
+acknowledgements: >-
+  The proof uses mathlib results on formal power series, central binomial
+  coefficients, polynomial coefficients, multinomials, and Lebesgue integration.
+  The project layout follows lean-dfr and PalomarTemplate.

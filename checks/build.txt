@@ -1,0 +1,37 @@
+$ lean --version
+Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)
+exit 0
+$ lake --version
+Lake version 5.0.0-src+eb6cafb (Lean version 4.35.0)
+exit 0
+$ git -C .lake/packages/mathlib rev-parse HEAD
+56a005855ea17e0b0958f73ec801ae140b0a1679
+exit 0
+$ LEAN_NUM_THREADS=2 lake build Challenge Solution Audit Autoconvolutions
+⚠ [2666/2676] Built Challenge (3.7s)
+warning: Challenge.lean:33:8: declaration uses `sorry`
+✔ [2668/2676] Built Definitions (3.6s)
+✔ [2670/2676] Built Autoconvolutions.BlockKeys (1.1s)
+✔ [2671/2676] Built Autoconvolutions.Levels (1.2s)
+✔ [2672/2677] Built Autoconvolutions.Parameters (1.3s)
+✔ [2673/2680] Built Autoconvolutions.Digits (1.4s)
+✔ [2675/2680] Built Autoconvolutions.BlockExpansion (950ms)
+✔ [2678/2712] Built Autoconvolutions.Estimate (1.9s)
+✔ [2705/2754] Built Autoconvolutions.Flat (1.2s)
+✔ [3440/3446] Built Autoconvolutions.Occupancy (804ms)
+✔ [3441/3446] Built Autoconvolutions.Coefficients (1.7s)
+✔ [3442/3447] Built Autoconvolutions.Interpolation (3.2s)
+✔ [3443/3447] Built Autoconvolutions.GoodBlocks (1.4s)
+✔ [3444/3447] Built Autoconvolutions.PolyStep (1.6s)
+✔ [3445/3455] Built Autoconvolutions.Step (1.3s)
+✔ [3587/3595] Built Autoconvolutions.Witness (1.7s)
+✔ [3588/3595] Built Autoconvolutions.Bounds (1.8s)
+✔ [3589/3595] Built Autoconvolutions.Main (2.0s)
+✔ [3590/3595] Built Solution (1.8s)
+ℹ [3592/3595] Built Audit (1.2s)
+info: Audit.lean:5:0: Autoconvolutions.sharpness (ε : ℝ) (hε : 0 < ε) :
+  ∃ d p, (∀ (j : Fin (d + 1)), 0 ≤ p j) ∧ (∃ j, 0 < p j) ∧ 1 - ε < Autoconvolutions.ratio (Autoconvolutions.step d p)
+info: Audit.lean:6:0: 'Autoconvolutions.sharpness' depends on axioms: [propext, Classical.choice, Quot.sound]
+✔ [3594/3595] Built Autoconvolutions (1.3s)
+Build completed successfully (3595 jobs).
+exit 0

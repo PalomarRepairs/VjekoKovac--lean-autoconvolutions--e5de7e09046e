@@ -1,0 +1,7 @@
+$ LEAN_NUM_THREADS=1 python3 scripts/check-axioms.py
+$ lake env lean Audit.lean
+Autoconvolutions.sharpness (ε : ℝ) (hε : 0 < ε) :
+  ∃ d p, (∀ (j : Fin (d + 1)), 0 ≤ p j) ∧ (∃ j, 0 < p j) ∧ 1 - ε < Autoconvolutions.ratio (Autoconvolutions.step d p)
+'Autoconvolutions.sharpness' depends on axioms: [propext, Classical.choice, Quot.sound]
+Axiom policy passed for Autoconvolutions.sharpness.
+exit 0

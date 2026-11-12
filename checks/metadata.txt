@@ -1,0 +1,44 @@
+Local metadata validation, 11 November 2026. Run from the repository root.
+PALOMAR_TOOLS points to checkouts of mathlib-initiative/formalization.yaml
+(formalization-standard), PalomarRegistry/PalomarSubmission (palomar-submission),
+and PalomarRegistry/PalomarTemplate (palomar-template) at the revisions below.
+
+$ python3 - <<'PY'
+import hashlib, importlib.metadata, json, os, platform, subprocess, sys
+from pathlib import Path
+import jsonschema, yaml
+
+tools = Path(os.environ['PALOMAR_TOOLS'])
+for name, revision in [('formalization-standard', '99c678e569c7c4c0772db297c5ddd5e4c9b6322e'),
+                       ('palomar-submission', '14aa8d6b3c2f14a8540605e37144560b9a00e7e7'),
+                       ('palomar-template', '2891de4c48955af824969a263d31b25e7a9a1406')]:
+    assert subprocess.check_output(['git', '-C', tools / name, 'rev-parse', 'HEAD'], text=True).strip() == revision
+    print(name, revision)
+sys.path.insert(0, str(tools / 'palomar-submission'))
+from scripts.submission_contract import load_formalization_metadata
+from scripts.verify_submission import load_comparator_config, repository_license_file, supported_toolchain
+
+p = Path('formalization.yaml')
+m = yaml.safe_load(p.read_bytes())
+schema = json.loads((tools / 'formalization-standard/schema/v0.4.schema.json').read_bytes())
+jsonschema.validate(m, schema)
+load_formalization_metadata(p)
+c = load_comparator_config(Path('comparator.json'))
+assert len(m['alignment']['statements']) == len(m['status']['main_results']) == 1
+assert [m['alignment']['statements'][0]['lean']] == c['theorem_names'] == ['Autoconvolutions.sharpness']
+assert m['status']['main_results'][0]['declaration'] == c['theorem_names'][0]
+assert m['status']['axioms'] == c['permitted_axioms'] == ['propext', 'Classical.choice', 'Quot.sound']
+assert repository_license_file(Path.cwd()).read_bytes() == (tools / 'palomar-template/LICENSE').read_bytes()
+print('Python', platform.python_version(), 'PyYAML', yaml.__version__, 'jsonschema', importlib.metadata.version('jsonschema'))
+print('Schema and intake metadata/config parsers passed. Theorem:', c['theorem_names'][0])
+print('Apache-2.0 template license matched. Supported Lean:', supported_toolchain(Path('lean-toolchain').read_text().strip()))
+print('formalization.yaml SHA-256:', hashlib.sha256(p.read_bytes()).hexdigest())
+PY
+formalization-standard 99c678e569c7c4c0772db297c5ddd5e4c9b6322e
+palomar-submission 14aa8d6b3c2f14a8540605e37144560b9a00e7e7
+palomar-template 2891de4c48955af824969a263d31b25e7a9a1406
+Python 3.12.14 PyYAML 6.0.3 jsonschema 4.26.0
+Schema and intake metadata/config parsers passed. Theorem: Autoconvolutions.sharpness
+Apache-2.0 template license matched. Supported Lean: v4.35.0
+formalization.yaml SHA-256: aa5c9e9aeb866807fa255ce3755fffd3f9ce2c3bd5ebfb167a48873e972d515d
+Exit status 0.

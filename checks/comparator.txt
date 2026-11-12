@@ -1,0 +1,82 @@
+From-source Lean Comparator check, 11 November 2026
+
+Target: Autoconvolutions.sharpness
+Reproduction from the repository root: bash scripts/verify-comparator.sh
+
+The offline Linux guest ran the pinned Lake Comparator with Bubblewrap. Its judge configuration added the executable paths of the con-ron and NanoDa kernels bundled with Lean 4.35.0. Every project Lean file and all four build/comparison inputs were copied into a fresh, empty project. The guest mounted the pinned dependency cache and checked all source hashes before building. The guest masked the older project directory. Both statement and solution were built from source and exported inside the Comparator sandbox.
+
+Console transcript (terminal animation and empty lines removed):
+
+The reduced project has no .lake directory before the check.
+Linux (none) 6.12.115-0-virt #1-Alpine SMP PREEMPT_DYNAMIC 2026-11-01 10:34:06 x86_64 Linux
+Lake version 5.0.0-src+eb6cafb (Lean version 4.35.0)
+Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)
+bubblewrap 0.12.0
+$ sha256sum -c /work/inputs.sha256
+Audit.lean: OK
+Autoconvolutions/BlockExpansion.lean: OK
+Autoconvolutions/BlockKeys.lean: OK
+Autoconvolutions/Bounds.lean: OK
+Autoconvolutions/Coefficients.lean: OK
+Autoconvolutions/Digits.lean: OK
+Autoconvolutions/Estimate.lean: OK
+Autoconvolutions/Flat.lean: OK
+Autoconvolutions/GoodBlocks.lean: OK
+Autoconvolutions/Interpolation.lean: OK
+Autoconvolutions/Levels.lean: OK
+Autoconvolutions/Main.lean: OK
+Autoconvolutions/Occupancy.lean: OK
+Autoconvolutions/Parameters.lean: OK
+Autoconvolutions/PolyStep.lean: OK
+Autoconvolutions/Step.lean: OK
+Autoconvolutions/Witness.lean: OK
+Autoconvolutions.lean: OK
+Challenge.lean: OK
+Definitions.lean: OK
+Solution.lean: OK
+comparator.json: OK
+lake-manifest.json: OK
+lakefile.toml: OK
+lean-toolchain: OK
+Only pinned dependency artifacts are present; project targets will be built from these verified sources.
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "Autoconvolutions.sharpness"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "external_kernels": {
+    "nanoda": [
+      "/source-image/lean-4.35.0-linux/bin/nanoda_bin"
+    ],
+    "con-ron": [
+      "/source-image/lean-4.35.0-linux/bin/con-ron"
+    ]
+  }
+}
+$ lake comparator --config /work/comparator-source.json
+Resolving dependencies
+Building Challenge
+⚠ [2662/2663] Built Challenge
+warning: Challenge.lean:33:8: declaration uses `sorry`
+Build completed successfully (2663 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Autoconvolutions.sharpness, propext, Classical.choice, Quot.sound, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Challenge
+Building Solution
+Build completed successfully (3589 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Autoconvolutions.sharpness, propext, Classical.choice, Quot.sound, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Solution
+Running con-ron kernel on solution
+con-ron: accepted 36867 declarations (--verified)
+con-ron kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+OFFLINE_SOURCE_COMPARATOR_EXIT=0
+[ 1267.065086] reboot: Power down
